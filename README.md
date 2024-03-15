@@ -1,1 +1,2 @@
-GEOS 472: Cartography
+# GEOS 472: Cartography
+Fiona Schute
