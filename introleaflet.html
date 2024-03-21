@@ -46,7 +46,7 @@
       const latitude = Number(meteorites.getString(i, 'reclat'));
       const longitude = Number(meteorites.getString(i, 'reclong'));
       
-    if (myMap.map.getBounds().contains({lat: latitude, lng:                 longitude})) {
+    if (myMap.map.getBounds().contains({lat: latitude, lng: longitude})) {
         const pos = myMap.latLngToPixel(latitude, longitude);
         let size = meteorites.getString(i, 'mass (g)');
         size = map(size, 558, 60000000, 1, 25) + myMap.zoom();
