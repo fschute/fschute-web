@@ -35,42 +35,24 @@
       									}
       								).addTo(map);
 
-
-//        var pointMarkerOptions = {
-//        	radius: 4,
-//        	fillColor: "#007800",
-//        	color: "#000",
-//        	weight: 1,
-//        	opacity: 0.2,
-//        	fillOpacity: 0.2
-//      };
-
+          var myStyle = {
+                  'fillColor': "#87ABB7",
+                  'weight': 2,
+                  'opacity': 1,
+                  'color': '#CECECE',
+                  'fillOpacity': 0.8
+          }
+      
         function onEachPoint(feature, layer) {
            if (feature.properties && feature.properties.BLDG_CODE)             {layer.bindTooltip(feature.properties.BLDG_CODE);}
         }
 
       $.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubc-geospatial-opendata/master/ubcv/locations/geojson/ubcv_buildings.geojson",
       function(data){
-      L.geoJSON(data, {pointToLayer: function (feature, latlng) {
-            return 
-                L.circleMarker(latlng, pointMarkerOptions);
-        	    },
-                onEachFeature: onEachPoint
-                }
+      L.geoJSON(data, {style: myStyle, 
+                       onEachFeature: onEachPoint} 
                 ).addTo(map);
-      L.geoJSON(data, {style: style}).addTo(map);
       });
-      
-      function style(feature) {
-            return {
-                  fillColor: "#87ABB7",
-                  weight: 2,
-                  opacity: 1,
-                  color: '#CECECE',
-                  fillOpacity: 0.8
-                  };
-}
-      
       
     </script>
   </body>
