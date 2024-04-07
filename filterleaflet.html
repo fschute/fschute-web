@@ -1,1 +1,116 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <h1>Filtering Leaflet</h1>
+    <title>Leaflet Exercise</title>
+    <meta charset="utf-8" />
 
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.4.0/dist/leaflet.css"
+    />
+    <script src="https://unpkg.com/leaflet@1.4.0/dist/leaflet.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+    <script src="./p5.min.js"></script>
+
+  </head>
+  <body>
+    <div id="mapid" style="width: 600px; height: 400px;"></div>
+
+    <div id="controls" style="margin: 15px;">
+      <button id="showAllPoiButton">Show All POI's</button>
+
+      <span style="display:inline-block; width: 30px"></span>
+      <input type="text" id="highlightPoiTextEntry" placeholder="Place Name" />
+      <button id="highlightPoiButton">Highlight</button>
+    </div>
+
+    <script>
+
+      var map = L.map('mapid', {
+          center: [49.265637, -123.256113],
+          zoom: 15
+        } 
+      );
+
+      var topoTiles = L.tileLayer(
+        'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+          maxZoom: 17,
+          attribution: 'Basemap data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Basemap style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
+        }
+      ).addTo(map);
+
+      var poiMarkerOptions = {
+        radius: 5,
+        fillColor: "#DC7D88",
+        color: "#000",
+        weight: 1,
+        opacity: 0.8,
+        fillOpacity: 0.8
+      };
+
+      function onEachPoi(feature, layer) {
+        if (feature.properties && feature.properties.PLACENAME) {
+          layer.bindTooltip(feature.properties.PLACENAME);
+        }
+      }
+
+      function poiPointToLayer(feature, latlng) {
+        return L.circleMarker(latlng, poiMarkerOptions);
+      }
+
+      function poiToFilter(feature, layer) {
+        if (placenameToHighlight === "") {
+          return true;} 
+        else if (feature.properties && feature.properties.PLACENAME) {
+          return feature.properties.PLACENAME.toLowerCase().includes(placenameToHighlight.toLowerCase());} 
+          else {
+            return false;
+          }
+        }
+
+      var lastLayerAdded = {};
+
+      function addPoi() {
+        if (map.hasLayer(lastLayerAdded)) {
+          map.removeLayer(lastLayerAdded);
+        }
+        lastLayerAdded = L.geoJSON(poiGeoJSONdata, {
+          pointToLayer: poiPointToLayer,
+          onEachFeature: onEachPoi,
+          filter: poiToFilter
+        });
+        lastLayerAdded.addTo(map);
+      };
+
+      var placenameToHighlight = "";
+
+      function highlightPoi() {
+        placenameToHighlight = document
+          .getElementById("highlightPoiTextEntry")
+          .value;
+        addPoi();
+        placenameToHighlight = ""; 
+      }
+
+      var poiGeoJSONdata;
+
+
+      $.getJSON("https://raw.githubusercontent.com/UBCGeodata/ubc-geospatial-opendata/master/ubcv/locations/geojson/ubcv_poi.geojson",
+        function(data) {
+          poiGeoJSONdata = data;
+          document
+            .getElementById("showAllPoiButton")
+            .addEventListener("click", addPoi);
+
+          document
+            .getElementById("highlightPoiButton")
+            .addEventListener("click", highlightPoi);
+
+        }
+      );
+    </script>
+  </body>
+</html>
