@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Lab 1</title>
+<meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+<link href="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css" rel="stylesheet">
+<script src="https://api.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+<style>
+  
+body { margin: 0; padding: 0; }
+  #map {width: 800px; height: 600px; margin-top: 10px;}
+  #legend {
+    position: absolute
+    top: 0; 
+    left: 0;
+    width: 140px; 
+    height: 110px;
+    margin-top: 30px;
+    margin-left: 30px;
+    background: white; 
+    border-radius: 5px;
+    padding: 5px 10px;
+    box-shadow: 0 0 0 2px rgb(0 0 0 / 10%);
+  }
+  
+</style>
+</head>
+<body>
+
+  
+<div id="map">
+  <div id="legend">
+    Red: Residential
+    Yellow: Agriculture
+    Green: Greenspace 
+    Gray: Industrial
+    Purple: Commercial
+    Black: Unlisted 
+  </div>
+</div>
+
+  
+<script>
+	mapboxgl.accessToken = 'pk.eyJ1IjoiZnNjaHV0ZTAxIiwiYSI6ImNsdWtiaHVpNTBwNG4ydmsyZmlpOWdncTkifQ.Enth-5-WgFCN_MUmjvt95w';
+    const map = new mapboxgl.Map({
+        container: 'map', 
+        style: 'mapbox://styles/fschute01/clv6dmqmo00ko01q13pnc6vod', 
+        center: [-73.446780, 45.525],
+        zoom: 10.5 
+    });
+</script>
+</body>
+</html>
