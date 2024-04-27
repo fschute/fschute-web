@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Lab 2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="https://api.tiles.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.js"></script>
+    <link
+      href="https://api.tiles.mapbox.com/mapbox-gl-js/v3.3.0/mapbox-gl.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+      }
+
+      h2,
+      h3 {
+        margin: 10px;
+        font-size: 18px;
+      }
+
+      h3 {
+        font-size: 16px;
+      }
+
+      p {
+        margin: 10px;
+      }
+
+      .map-overlay {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        background: #fff;
+        margin-right: 20px;
+        font-family: Arial, sans-serif;
+        overflow: auto;
+        border-radius: 3px;
+      }
+
+      #map {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 100%;
+      }
+
+      #features {
+        top: 0;
+        height: 200px;
+        margin-top: 20px;
+        width: 200px;
+      }
+
+      #legend {
+        padding: 10px;
+        box-shadow: 0 1px 2px rgb(0 0 0 / 10%);
+        line-height: 18px;
+        height: 110px;
+        margin-bottom: 40px;
+        width: 160px;
+      }
+
+      .legend-key {
+        display: inline-block;
+        border-radius: 20%;
+        width: 10px;
+        height: 10px;
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+    <div class="map-overlay" id="features">
+      <h2>Provincial Median After-Tax Income</h2>
+      <div id="pd"><p>2021 Census Results</p></div>
+    </div>
+    <div class="map-overlay" id="legend"></div>
+
+    <script>
+      mapboxgl.accessToken = 'pk.eyJ1IjoiZnNjaHV0ZTAxIiwiYSI6ImNsdWtiaHVpNTBwNG4ydmsyZmlpOWdncTkifQ.Enth-5-WgFCN_MUmjvt95w';
+
+      const map = new mapboxgl.Map({
+        container: 'map', 
+        style: 'mapbox://styles/fschute01/clvh7b93400hh01rdazulfeqw'
+      });
+
+      map.on('load', () => {
+        map.getCanvas().style.cursor = 'default';
+//console.log(map);
+        map.fitBounds([
+          [-136.073270, 68.236128],
+          [-52.946984, 58.255578]
+        ]);
+
+        const layers = [
+          '$33,200 - $35,449',
+          '$35,450 - $37,699',
+          '$37,700 - $42,199',
+          '$42,200 - $46,699',
+          '$46,700 - $51,199',
+          '$51,200 +'
+        ];
+        const colors = [
+          '#ebdff2',
+          '#d7bfe6',
+          '#c39fd9',
+          '#af7fcd',
+          '#8d45ba',
+          '#642a89'
+        ];
+
+        const legend = document.getElementById('legend');
+
+        layers.forEach((layer, i) => {
+          const color = colors[i];
+          const item = document.createElement('div');
+          const key = document.createElement('span');
+          key.className = 'legend-key';
+          key.style.backgroundColor = color;
+
+          const value = document.createElement('span');
+          value.innerHTML = `${layer}`;
+          item.appendChild(key);
+          item.appendChild(value);
+          legend.appendChild(item);
+        });
+
+        map.on('mousemove', (event) => {
+          const income = map.queryRenderedFeatures(event.point, {
+            layers: ['income-dataa-1zobs0']
+          });
+          document.getElementById('pd').innerHTML = income.length
+            ?("<h3>"+income[0].properties.name+"</h3><p><strong><em>$"+income[0].properties.income.toLocaleString('en-US').toString()+"</strong> Canadian Dollars</em></p>")
+            : `<p>2021 Census Results</p>`;
+        });
+      });
+    </script>
+  </body>
+</html>
